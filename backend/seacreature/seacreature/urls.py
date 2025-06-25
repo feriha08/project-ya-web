@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from myapp.views import login_view 
+
 
 urlpatterns = [
     # Admin panel
@@ -9,6 +11,11 @@ urlpatterns = [
 
     # API routes from your app
     path('api/', include('myapp.urls')),
+
+
+    
+
+
 ]
 
 # Serve uploaded media files during development

@@ -2,21 +2,42 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
-from .models import CreatureCard, Booking, CustomerProfile
-from .models import Payment 
-from .Serializers import CreatureCardSerializer, BookingSerializer, CustomerProfileSerializer,PaymentSerializer
+from django.contrib.auth import authenticate
 
-
+from .models import CreatureCard, Booking, CustomerProfile, Payment
 from .Serializers import (
     CreatureCardSerializer, 
     BookingSerializer, 
     CustomerProfileSerializer,
     PaymentSerializer,
+    LoginSerializer
 )
-import logging
 
+import logging
 logger = logging.getLogger(__name__)
 
+
+@api_view(['POST'])
+def login_view(request):
+    serializer = LoginSerializer(data=request.data)
+    if serializer.is_valid():
+        username = serializer.validated_data['username']
+        email = serializer.validated_data['email']
+        password = serializer.validated_data['password']
+
+        try:
+            user = User.objects.get(username=username, email=email)
+            if user.check_password(password):
+                return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Incorrect password'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ✅ Generic handler for all models (GET, POST, PUT, DELETE)
 def generic_api(model_class, serializer_class):
     @api_view(['GET', 'POST', 'PUT', 'DELETE'])
     def api_handler(request, pk=None):
@@ -66,12 +87,12 @@ def generic_api(model_class, serializer_class):
             return Response({'error': 'ID is required to delete data'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({'error': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    
+
     return api_handler
 
+
+# ✅ Assign views for URL routing
 manage_creature = generic_api(CreatureCard, CreatureCardSerializer)
 manage_booking = generic_api(Booking, BookingSerializer)
 manage_customerprofile = generic_api(CustomerProfile, CustomerProfileSerializer)
 manage_payment = generic_api(Payment, PaymentSerializer)
-
-
