@@ -18,6 +18,7 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = '__all__'
+        depth = 1   # we add depth 1
 
 # ✅ CustomerProfile serializer
 class CustomerProfileSerializer(serializers.ModelSerializer):

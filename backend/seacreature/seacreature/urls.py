@@ -4,6 +4,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from myapp.views import login_view 
 
+# add new one 
+
+
 
 urlpatterns = [
     # Admin panel

@@ -4,14 +4,9 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-from .models import CreatureCard, Booking, CustomerProfile, Payment
-from .Serializers import (
-    CreatureCardSerializer, 
-    BookingSerializer, 
-    CustomerProfileSerializer,
-    PaymentSerializer,
-    LoginSerializer
-)
+from .models import *
+from .Serializers import *
+
 
 import logging
 logger = logging.getLogger(__name__)
